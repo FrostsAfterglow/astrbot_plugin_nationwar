@@ -2,3 +2,10 @@ __pycache__/
 *.pyc
 data_runtime/
 *.db
+
+# AstrBot 框架运行时生成，非本插件资源
+data/cmd_config.json
+data/t2i_templates/
+
+# 本地预览产物
+_preview/

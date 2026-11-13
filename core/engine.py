@@ -1298,10 +1298,10 @@ class Engine:
         if op == "rules":
             return self._rules_text()
         if op == "charts":
-            return ("📊 两张大型指令图已随插件提供：\n"
-                    "· 内政经济指令图（commands_chart1.html）\n"
-                    "· 军事外交指令图（commands_chart2.html）\n"
-                    "查看方式：在插件目录打开，或访问仓库 README 中的图片链接。")
+            # /指令图 由 main 层直接发送两张 PNG；此处仅作为图片资源缺失时的降级文案
+            return ("📊 两张大型指令图（内政经济 / 军事外交）已作为图片直接发送。\n"
+                    "若未收到图片，请检查插件 assets 目录是否包含 commands_chart1.png / "
+                    "commands_chart2.png，以及是否已安装 Pillow。")
         if op == "status":
             players = self.store.all_players()
             regs = len(players)
