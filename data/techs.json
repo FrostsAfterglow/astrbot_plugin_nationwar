@@ -1,0 +1,441 @@
+[
+  {
+    "id": "agri",
+    "name": "农业",
+    "tier": 1,
+    "cost": 30,
+    "pre": [],
+    "unlocks": "解锁高效农场",
+    "desc": "基础农业技术。"
+  },
+  {
+    "id": "mining",
+    "name": "采矿",
+    "tier": 1,
+    "cost": 30,
+    "pre": [],
+    "unlocks": "解锁矿场增产",
+    "desc": "基础采矿技术。"
+  },
+  {
+    "id": "oilrefine",
+    "name": "炼油",
+    "tier": 1,
+    "cost": 40,
+    "pre": [
+      "mining"
+    ],
+    "unlocks": "解锁油井",
+    "desc": "石油提炼。"
+  },
+  {
+    "id": "metallurgy",
+    "name": "冶金",
+    "tier": 2,
+    "cost": 60,
+    "pre": [
+      "mining"
+    ],
+    "unlocks": "解锁炼钢厂",
+    "desc": "金属冶炼。"
+  },
+  {
+    "id": "powergrid",
+    "name": "电力",
+    "tier": 2,
+    "cost": 60,
+    "pre": [],
+    "unlocks": "解锁发电厂",
+    "desc": "电网技术。"
+  },
+  {
+    "id": "chemtech",
+    "name": "化工",
+    "tier": 2,
+    "cost": 70,
+    "pre": [
+      "oilrefine"
+    ],
+    "unlocks": "解锁化工厂",
+    "desc": "化学工业。"
+  },
+  {
+    "id": "nucleart",
+    "name": "核能",
+    "tier": 3,
+    "cost": 160,
+    "pre": [
+      "powergrid",
+      "metallurgy"
+    ],
+    "unlocks": "解锁核电厂",
+    "desc": "核裂变发电。"
+  },
+  {
+    "id": "computer",
+    "name": "计算机",
+    "tier": 3,
+    "cost": 120,
+    "pre": [],
+    "unlocks": "解锁网络战",
+    "desc": "信息处理。"
+  },
+  {
+    "id": "radart",
+    "name": "雷达技术",
+    "tier": 2,
+    "cost": 70,
+    "pre": [
+      "powergrid"
+    ],
+    "unlocks": "解锁雷达站",
+    "desc": "远程探测。"
+  },
+  {
+    "id": "infantry",
+    "name": "步兵科技",
+    "tier": 1,
+    "cost": 30,
+    "pre": [],
+    "unlocks": "解锁步兵",
+    "desc": "单兵装备。"
+  },
+  {
+    "id": "artillery",
+    "name": "炮兵科技",
+    "tier": 2,
+    "cost": 70,
+    "pre": [
+      "metallurgy"
+    ],
+    "unlocks": "解锁炮兵",
+    "desc": "火力压制。"
+  },
+  {
+    "id": "armor",
+    "name": "装甲科技",
+    "tier": 3,
+    "cost": 130,
+    "pre": [
+      "metallurgy"
+    ],
+    "unlocks": "解锁坦克",
+    "desc": "机械化突击。"
+  },
+  {
+    "id": "heli",
+    "name": "直升机",
+    "tier": 3,
+    "cost": 140,
+    "pre": [
+      "powergrid"
+    ],
+    "unlocks": "解锁直升机",
+    "desc": "空中机动。"
+  },
+  {
+    "id": "airforce",
+    "name": "空军科技",
+    "tier": 4,
+    "cost": 220,
+    "pre": [
+      "powergrid",
+      "computer"
+    ],
+    "unlocks": "解锁战斗机/轰炸机",
+    "desc": "制空权。"
+  },
+  {
+    "id": "navy",
+    "name": "海军科技",
+    "tier": 3,
+    "cost": 150,
+    "pre": [
+      "metallurgy"
+    ],
+    "unlocks": "解锁驱逐舰",
+    "desc": "海上力量。"
+  },
+  {
+    "id": "submarine",
+    "name": "潜艇技术",
+    "tier": 4,
+    "cost": 200,
+    "pre": [
+      "navy"
+    ],
+    "unlocks": "解锁潜艇",
+    "desc": "水下威慑。"
+  },
+  {
+    "id": "carrier",
+    "name": "航母技术",
+    "tier": 5,
+    "cost": 320,
+    "pre": [
+      "submarine",
+      "airforce"
+    ],
+    "unlocks": "解锁航母",
+    "desc": "海上机场。"
+  },
+  {
+    "id": "missilet",
+    "name": "导弹技术",
+    "tier": 4,
+    "cost": 240,
+    "pre": [
+      "computer",
+      "metallurgy"
+    ],
+    "unlocks": "解锁导弹基地",
+    "desc": "远程打击。"
+  },
+  {
+    "id": "nuclearw",
+    "name": "核武器",
+    "tier": 5,
+    "cost": 400,
+    "pre": [
+      "nucleart",
+      "missilet"
+    ],
+    "unlocks": "解锁核打击",
+    "desc": "战略威慑。"
+  },
+  {
+    "id": "stealth",
+    "name": "隐形技术",
+    "tier": 4,
+    "cost": 260,
+    "pre": [
+      "airforce",
+      "computer"
+    ],
+    "unlocks": "提升突防",
+    "desc": "隐身设计。"
+  },
+  {
+    "id": "ewar",
+    "name": "电子战",
+    "tier": 4,
+    "cost": 230,
+    "pre": [
+      "computer"
+    ],
+    "unlocks": "解锁电子战",
+    "desc": "电磁对抗。"
+  },
+  {
+    "id": "cyber",
+    "name": "网络战",
+    "tier": 4,
+    "cost": 250,
+    "pre": [
+      "computer"
+    ],
+    "unlocks": "解锁网络战单位",
+    "desc": "信息攻防。"
+  },
+  {
+    "id": "bio",
+    "name": "生物技术",
+    "tier": 3,
+    "cost": 140,
+    "pre": [],
+    "unlocks": "解锁医疗加成",
+    "desc": "生命科技。"
+  },
+  {
+    "id": "gene",
+    "name": "基因工程",
+    "tier": 4,
+    "cost": 280,
+    "pre": [
+      "bio"
+    ],
+    "unlocks": "解锁高级兵种",
+    "desc": "基因强化。"
+  },
+  {
+    "id": "nano",
+    "name": "纳米技术",
+    "tier": 5,
+    "cost": 360,
+    "pre": [
+      "chemtech",
+      "computer"
+    ],
+    "unlocks": "全军强化",
+    "desc": "微观制造。"
+  },
+  {
+    "id": "quantum",
+    "name": "量子技术",
+    "tier": 5,
+    "cost": 380,
+    "pre": [
+      "computer"
+    ],
+    "unlocks": "解锁卫星/破译",
+    "desc": "量子计算。"
+  },
+  {
+    "id": "laser",
+    "name": "激光技术",
+    "tier": 4,
+    "cost": 240,
+    "pre": [
+      "powergrid"
+    ],
+    "unlocks": "解锁防空升级",
+    "desc": "定向能。"
+  },
+  {
+    "id": "satellite",
+    "name": "卫星技术",
+    "tier": 4,
+    "cost": 260,
+    "pre": [
+      "rocket"
+    ],
+    "unlocks": "解锁卫星",
+    "desc": "天基侦察。"
+  },
+  {
+    "id": "rocket",
+    "name": "火箭技术",
+    "tier": 3,
+    "cost": 150,
+    "pre": [
+      "metallurgy"
+    ],
+    "unlocks": "解锁航天中心",
+    "desc": "运载能力。"
+  },
+  {
+    "id": "spaceflight",
+    "name": "航天飞机",
+    "tier": 5,
+    "cost": 340,
+    "pre": [
+      "satellite",
+      "rocket"
+    ],
+    "unlocks": "太空部署",
+    "desc": "可复用航天器。"
+  },
+  {
+    "id": "logistics",
+    "name": "物流",
+    "tier": 2,
+    "cost": 60,
+    "pre": [],
+    "unlocks": "提升补给",
+    "desc": "运输效率。"
+  },
+  {
+    "id": "mobilize",
+    "name": "动员",
+    "tier": 2,
+    "cost": 60,
+    "pre": [],
+    "unlocks": "提升征兵",
+    "desc": "全民动员。"
+  },
+  {
+    "id": "psywar",
+    "name": "心理战",
+    "tier": 3,
+    "cost": 130,
+    "pre": [
+      "media"
+    ],
+    "unlocks": "提升威慑",
+    "desc": "舆论攻势。"
+  },
+  {
+    "id": "media",
+    "name": "传媒",
+    "tier": 2,
+    "cost": 70,
+    "pre": [],
+    "unlocks": "解锁电视台",
+    "desc": "信息传播。"
+  },
+  {
+    "id": "diplomacy",
+    "name": "外交学",
+    "tier": 2,
+    "cost": 60,
+    "pre": [],
+    "unlocks": "解锁大使馆",
+    "desc": "国际关系。"
+  },
+  {
+    "id": "economics",
+    "name": "经济学",
+    "tier": 2,
+    "cost": 70,
+    "pre": [],
+    "unlocks": "提升资金产出",
+    "desc": "宏观管理。"
+  },
+  {
+    "id": "governance",
+    "name": "治国术",
+    "tier": 3,
+    "cost": 130,
+    "pre": [
+      "economics"
+    ],
+    "unlocks": "提升稳定",
+    "desc": "国家管理。"
+  },
+  {
+    "id": "fortify",
+    "name": "要塞工程",
+    "tier": 3,
+    "cost": 120,
+    "pre": [
+      "metallurgy"
+    ],
+    "unlocks": "解锁城墙升级",
+    "desc": "筑城学。"
+  },
+  {
+    "id": "recon",
+    "name": "侦察术",
+    "tier": 2,
+    "cost": 60,
+    "pre": [
+      "radart"
+    ],
+    "unlocks": "提升侦察",
+    "desc": "情报搜集。"
+  },
+  {
+    "id": "ai",
+    "name": "人工智能",
+    "tier": 5,
+    "cost": 420,
+    "pre": [
+      "quantum",
+      "computer"
+    ],
+    "unlocks": "全军智能",
+    "desc": "自主系统。"
+  },
+  {
+    "id": "drone",
+    "name": "无人机",
+    "tier": 4,
+    "cost": 220,
+    "pre": [
+      "computer",
+      "powergrid"
+    ],
+    "unlocks": "解锁无人机",
+    "desc": "无人平台。"
+  }
+]

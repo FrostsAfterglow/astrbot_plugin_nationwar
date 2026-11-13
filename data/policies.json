@@ -1,0 +1,122 @@
+[
+  {
+    "id": "market_econ",
+    "name": "市场经济",
+    "effect": "资金产出+20%，幸福+5",
+    "desc": "自由市场调节。"
+  },
+  {
+    "id": "planned_econ",
+    "name": "计划经济",
+    "effect": "资源产出+10%，幸福-3",
+    "desc": "国家统筹分配。"
+  },
+  {
+    "id": "conscription",
+    "name": "征兵制",
+    "effect": "征兵成本-30%，幸福-5",
+    "desc": "义务兵役。"
+  },
+  {
+    "id": "volunteer",
+    "name": "志愿兵制",
+    "effect": "征兵成本+20%，幸福+5",
+    "desc": "职业军人。"
+  },
+  {
+    "id": "welfare",
+    "name": "高福利",
+    "effect": "幸福+10%，资金产出-10%",
+    "desc": "民生优先。"
+  },
+  {
+    "id": "free_trade",
+    "name": "自由贸易",
+    "effect": "贸易收益+30%",
+    "desc": "敞开市场。"
+  },
+  {
+    "id": "protection",
+    "name": "贸易保护",
+    "effect": "资金产出+10%，贸易收益-20%",
+    "desc": "保护本土产业。"
+  },
+  {
+    "id": "martial",
+    "name": "军事管制",
+    "effect": "造兵+20%，幸福-8",
+    "desc": "战时体制。"
+  },
+  {
+    "id": "censorship",
+    "name": "言论管制",
+    "effect": "稳定+8%，幸福-4",
+    "desc": "信息管控。"
+  },
+  {
+    "id": "democracy",
+    "name": "民主",
+    "effect": "稳定+10%，幸福+6",
+    "desc": "民主体制。"
+  },
+  {
+    "id": "centralism",
+    "name": "集权",
+    "effect": "稳定+12%，幸福-3",
+    "desc": "强力中枢。"
+  },
+  {
+    "id": "green",
+    "name": "环保",
+    "effect": "幸福+6%，石油产出-5%",
+    "desc": "可持续发展。"
+  },
+  {
+    "id": "industrial",
+    "name": "工业化",
+    "effect": "工厂/炼钢产出+20%",
+    "desc": "重工业化。"
+  },
+  {
+    "id": "sci_tech",
+    "name": "科教兴国",
+    "effect": "科技点+25%",
+    "desc": "科技立国。"
+  },
+  {
+    "id": "strong_army",
+    "name": "强军",
+    "effect": "全军战力+10%，资金-8%",
+    "desc": "军事优先。"
+  },
+  {
+    "id": "good_neighbor",
+    "name": "睦邻",
+    "effect": "外交收益+20%",
+    "desc": "与邻为善。"
+  },
+  {
+    "id": "isolation",
+    "name": "孤立主义",
+    "effect": "稳定+6%，外交收益-30%",
+    "desc": "闭关自守。"
+  },
+  {
+    "id": "expansion",
+    "name": "扩张主义",
+    "effect": "征服收益+20%，稳定-5",
+    "desc": "领土渴望。"
+  },
+  {
+    "id": "religious_free",
+    "name": "宗教自由",
+    "effect": "幸福+5%，稳定+3",
+    "desc": "信仰多元。"
+  },
+  {
+    "id": "secular",
+    "name": "世俗化",
+    "effect": "稳定+5%，幸福-2",
+    "desc": "政教分离。"
+  }
+]

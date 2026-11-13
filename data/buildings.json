@@ -1,0 +1,498 @@
+[
+  {
+    "id": "farm",
+    "name": "农场",
+    "cat": "生产",
+    "maxlv": 10,
+    "cost": {
+      "money": 80,
+      "food": 0
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {
+      "food": 12
+    },
+    "desc": "基础粮食生产，稳定供给人口。"
+  },
+  {
+    "id": "granary",
+    "name": "粮仓",
+    "cat": "生产",
+    "maxlv": 8,
+    "cost": {
+      "money": 120,
+      "food": 60
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {
+      "food": 8
+    },
+    "desc": "提升粮食储存上限并少量增产。"
+  },
+  {
+    "id": "mine",
+    "name": "矿场",
+    "cat": "生产",
+    "maxlv": 10,
+    "cost": {
+      "money": 150,
+      "food": 0
+    },
+    "upkeep": {
+      "rare": 0
+    },
+    "prod": {
+      "rare": 4
+    },
+    "desc": "开采稀有金属，科技与造兵刚需。"
+  },
+  {
+    "id": "oilwell",
+    "name": "油井",
+    "cat": "生产",
+    "maxlv": 10,
+    "cost": {
+      "money": 200,
+      "food": 0
+    },
+    "upkeep": {
+      "oil": 0
+    },
+    "prod": {
+      "oil": 10
+    },
+    "desc": "开采石油，机械化部队的燃料。"
+  },
+  {
+    "id": "rareore",
+    "name": "稀有矿",
+    "cat": "生产",
+    "maxlv": 8,
+    "cost": {
+      "money": 260,
+      "food": 0
+    },
+    "upkeep": {
+      "rare": 0
+    },
+    "prod": {
+      "rare": 7
+    },
+    "desc": "高品位稀有矿，高级科技核心材料。"
+  },
+  {
+    "id": "factory",
+    "name": "工厂",
+    "cat": "生产",
+    "maxlv": 10,
+    "cost": {
+      "money": 220,
+      "rare": 4
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "money": 18
+    },
+    "desc": "制造商品换取资金。"
+  },
+  {
+    "id": "steel",
+    "name": "炼钢厂",
+    "cat": "生产",
+    "maxlv": 8,
+    "cost": {
+      "money": 300,
+      "rare": 6
+    },
+    "upkeep": {
+      "rare": 0
+    },
+    "prod": {
+      "rare": 3,
+      "money": 6
+    },
+    "desc": "冶金工业，支撑重工业。"
+  },
+  {
+    "id": "chem",
+    "name": "化工厂",
+    "cat": "生产",
+    "maxlv": 8,
+    "cost": {
+      "money": 320,
+      "oil": 8,
+      "rare": 4
+    },
+    "upkeep": {
+      "oil": 0
+    },
+    "prod": {
+      "oil": 4,
+      "money": 8
+    },
+    "desc": "化工产出，燃料与材料。"
+  },
+  {
+    "id": "power",
+    "name": "发电厂",
+    "cat": "生产",
+    "maxlv": 8,
+    "cost": {
+      "money": 180,
+      "rare": 2
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "money": 10
+    },
+    "desc": "提供电力，降低其他建筑维护。"
+  },
+  {
+    "id": "nuclear",
+    "name": "核电厂",
+    "cat": "生产",
+    "maxlv": 6,
+    "cost": {
+      "money": 800,
+      "rare": 20
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "money": 40
+    },
+    "desc": "海量电力，高耗能科技基石。"
+  },
+  {
+    "id": "research",
+    "name": "研究中心",
+    "cat": "科研",
+    "maxlv": 10,
+    "cost": {
+      "money": 260,
+      "rare": 6
+    },
+    "upkeep": {
+      "tech": 0
+    },
+    "prod": {
+      "tech": 6
+    },
+    "desc": "产出科技点，解锁未来。"
+  },
+  {
+    "id": "warehouse",
+    "name": "仓库",
+    "cat": "后勤",
+    "maxlv": 8,
+    "cost": {
+      "money": 100
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升资源储存上限。"
+  },
+  {
+    "id": "radar",
+    "name": "雷达站",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 240,
+      "rare": 4
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升侦察与防御预警。"
+  },
+  {
+    "id": "aa",
+    "name": "防空炮",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 200,
+      "rare": 3
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "拦截空袭与导弹。"
+  },
+  {
+    "id": "barracks",
+    "name": "兵营",
+    "cat": "军事",
+    "maxlv": 10,
+    "cost": {
+      "money": 160,
+      "food": 40
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {},
+    "desc": "训练陆军的基础设施。"
+  },
+  {
+    "id": "tankplant",
+    "name": "坦克厂",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 360,
+      "rare": 8
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "生产装甲车辆。"
+  },
+  {
+    "id": "dock",
+    "name": "船坞",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 420,
+      "rare": 10
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "建造舰船，需沿海。"
+  },
+  {
+    "id": "airbase",
+    "name": "空军基地",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 480,
+      "rare": 12
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "起降作战飞机。"
+  },
+  {
+    "id": "missile",
+    "name": "导弹基地",
+    "cat": "军事",
+    "maxlv": 6,
+    "cost": {
+      "money": 600,
+      "rare": 18
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "部署弹道与巡航导弹。"
+  },
+  {
+    "id": "space",
+    "name": "航天中心",
+    "cat": "军事",
+    "maxlv": 4,
+    "cost": {
+      "money": 1200,
+      "rare": 40
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "发射卫星与太空威慑。"
+  },
+  {
+    "id": "training",
+    "name": "训练营",
+    "cat": "军事",
+    "maxlv": 8,
+    "cost": {
+      "money": 180,
+      "food": 30
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {},
+    "desc": "提升新兵训练效率。"
+  },
+  {
+    "id": "supply",
+    "name": "补给站",
+    "cat": "后勤",
+    "maxlv": 8,
+    "cost": {
+      "money": 140,
+      "food": 20
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {
+      "food": 4
+    },
+    "desc": "保障前线补给，减少战损。"
+  },
+  {
+    "id": "hospital",
+    "name": "医院",
+    "cat": "社会",
+    "maxlv": 8,
+    "cost": {
+      "money": 160,
+      "food": 20
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {},
+    "desc": "提升幸福度与人口上限。"
+  },
+  {
+    "id": "school",
+    "name": "学校",
+    "cat": "社会",
+    "maxlv": 8,
+    "cost": {
+      "money": 150
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "tech": 2
+    },
+    "desc": "提升教育与科技点。"
+  },
+  {
+    "id": "tv",
+    "name": "电视台",
+    "cat": "社会",
+    "maxlv": 6,
+    "cost": {
+      "money": 220
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升声望与影响力。"
+  },
+  {
+    "id": "intel",
+    "name": "情报局",
+    "cat": "谍报",
+    "maxlv": 6,
+    "cost": {
+      "money": 300,
+      "rare": 6
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升谍报与反间谍能力。"
+  },
+  {
+    "id": "embassy",
+    "name": "大使馆",
+    "cat": "外交",
+    "maxlv": 6,
+    "cost": {
+      "money": 200
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升外交影响力。"
+  },
+  {
+    "id": "market",
+    "name": "市场",
+    "cat": "经济",
+    "maxlv": 8,
+    "cost": {
+      "money": 130
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "money": 6
+    },
+    "desc": "促进贸易，增加资金。"
+  },
+  {
+    "id": "wall",
+    "name": "城墙",
+    "cat": "防御",
+    "maxlv": 8,
+    "cost": {
+      "money": 170,
+      "rare": 2
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {},
+    "desc": "提升地区防御值。"
+  },
+  {
+    "id": "capital",
+    "name": "首都",
+    "cat": "行政",
+    "maxlv": 5,
+    "cost": {
+      "money": 500,
+      "rare": 10
+    },
+    "upkeep": {
+      "money": 0
+    },
+    "prod": {
+      "money": 12,
+      "tech": 2
+    },
+    "desc": "国家中枢，提供全局加成。"
+  },
+  {
+    "id": "cityhall",
+    "name": "市政厅",
+    "cat": "行政",
+    "maxlv": 8,
+    "cost": {
+      "money": 190,
+      "food": 20
+    },
+    "upkeep": {
+      "food": 0
+    },
+    "prod": {
+      "money": 4
+    },
+    "desc": "提升地区治理与稳定。"
+  }
+]

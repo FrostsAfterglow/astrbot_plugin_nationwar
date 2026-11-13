@@ -1,0 +1,33 @@
+{
+  "tick_enabled": {
+    "type": "bool",
+    "description": "是否启用后台自动结算（资源产出、事件触发）。关闭则仅在指令触发时结算。",
+    "default": true
+  },
+  "tick_interval_min": {
+    "type": "int",
+    "description": "自动结算间隔（分钟）。",
+    "default": 30
+  },
+  "starting_resources": {
+    "type": "string",
+    "description": "新玩家初始资源（逗号分隔：资金,粮食,石油,稀有金属,科技点）。",
+    "default": "1000,1000,200,50,50"
+  },
+  "world_name": {
+    "type": "string",
+    "description": "虚拟世界名称。",
+    "default": "艾瑟拉大陆"
+  },
+  "max_regions_per_player": {
+    "type": "int",
+    "description": "单个玩家最多可拥有的地区数（0 表示不限制）。",
+    "default": 0
+  },
+  "reply_style": {
+    "type": "string",
+    "description": "回复风格。",
+    "options": ["plain", "cute", "formal"],
+    "default": "plain"
+  }
+}

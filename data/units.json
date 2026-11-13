@@ -1,0 +1,302 @@
+[
+  {
+    "id": "infantry",
+    "name": "步兵",
+    "cat": "陆军",
+    "cost": {
+      "money": 20,
+      "food": 5
+    },
+    "power": 10,
+    "tech": "",
+    "desc": "最基础的地面部队，无需科技即可征召。"
+  },
+  {
+    "id": "mg",
+    "name": "机枪兵",
+    "cat": "陆军",
+    "cost": {
+      "money": 30,
+      "food": 6
+    },
+    "power": 16,
+    "tech": "infantry",
+    "desc": "压制火力。"
+  },
+  {
+    "id": "artillery",
+    "name": "炮兵",
+    "cat": "陆军",
+    "cost": {
+      "money": 80,
+      "food": 10
+    },
+    "power": 35,
+    "tech": "artillery",
+    "desc": "远程火力支援。"
+  },
+  {
+    "id": "tank",
+    "name": "坦克",
+    "cat": "陆军",
+    "cost": {
+      "money": 200,
+      "rare": 6
+    },
+    "power": 90,
+    "tech": "armor",
+    "desc": "主力突击装甲。"
+  },
+  {
+    "id": "apc",
+    "name": "装甲车",
+    "cat": "陆军",
+    "cost": {
+      "money": 120,
+      "rare": 3
+    },
+    "power": 50,
+    "tech": "armor",
+    "desc": "机动运兵。"
+  },
+  {
+    "id": "engineer",
+    "name": "工兵",
+    "cat": "陆军",
+    "cost": {
+      "money": 40,
+      "food": 8
+    },
+    "power": 18,
+    "tech": "infantry",
+    "desc": "修桥筑路架墙。"
+  },
+  {
+    "id": "specops",
+    "name": "特种兵",
+    "cat": "特种",
+    "cost": {
+      "money": 120,
+      "rare": 4
+    },
+    "power": 60,
+    "tech": "infantry",
+    "desc": "渗透与斩首。"
+  },
+  {
+    "id": "guard",
+    "name": "国民警卫",
+    "cat": "陆军",
+    "cost": {
+      "money": 25,
+      "food": 5
+    },
+    "power": 12,
+    "tech": "mobilize",
+    "desc": "本土防御民兵。"
+  },
+  {
+    "id": "heli",
+    "name": "直升机",
+    "cat": "空军",
+    "cost": {
+      "money": 260,
+      "rare": 8
+    },
+    "power": 110,
+    "tech": "heli",
+    "desc": "空中突击。"
+  },
+  {
+    "id": "fighter",
+    "name": "战斗机",
+    "cat": "空军",
+    "cost": {
+      "money": 380,
+      "rare": 12
+    },
+    "power": 160,
+    "tech": "airforce",
+    "desc": "制空作战。"
+  },
+  {
+    "id": "bomber",
+    "name": "轰炸机",
+    "cat": "空军",
+    "cost": {
+      "money": 520,
+      "rare": 16
+    },
+    "power": 220,
+    "tech": "airforce",
+    "desc": "战略轰炸。"
+  },
+  {
+    "id": "drone",
+    "name": "无人机",
+    "cat": "空军",
+    "cost": {
+      "money": 200,
+      "rare": 6
+    },
+    "power": 95,
+    "tech": "drone",
+    "desc": "廉价侦察打击。"
+  },
+  {
+    "id": "destroyer",
+    "name": "驱逐舰",
+    "cat": "海军",
+    "cost": {
+      "money": 360,
+      "rare": 10
+    },
+    "power": 140,
+    "tech": "navy",
+    "desc": "海上护航。"
+  },
+  {
+    "id": "cruiser",
+    "name": "巡洋舰",
+    "cat": "海军",
+    "cost": {
+      "money": 560,
+      "rare": 16
+    },
+    "power": 210,
+    "tech": "navy",
+    "desc": "舰队核心。"
+  },
+  {
+    "id": "submarine",
+    "name": "潜艇",
+    "cat": "海军",
+    "cost": {
+      "money": 480,
+      "rare": 14
+    },
+    "power": 180,
+    "tech": "submarine",
+    "desc": "隐蔽猎杀。"
+  },
+  {
+    "id": "carrier",
+    "name": "航母",
+    "cat": "海军",
+    "cost": {
+      "money": 1400,
+      "rare": 40
+    },
+    "power": 400,
+    "tech": "carrier",
+    "desc": "海上空军基地。"
+  },
+  {
+    "id": "missile",
+    "name": "导弹车",
+    "cat": "战略",
+    "cost": {
+      "money": 420,
+      "rare": 18
+    },
+    "power": 200,
+    "tech": "missilet",
+    "desc": "机动弹道。"
+  },
+  {
+    "id": "samm",
+    "name": "防空导弹",
+    "cat": "陆军",
+    "cost": {
+      "money": 240,
+      "rare": 8
+    },
+    "power": 120,
+    "tech": "laser",
+    "desc": "区域防空。"
+  },
+  {
+    "id": "nukesilo",
+    "name": "核导弹",
+    "cat": "战略",
+    "cost": {
+      "money": 1600,
+      "rare": 60
+    },
+    "power": 600,
+    "tech": "nuclearw",
+    "desc": "战略核打击。"
+  },
+  {
+    "id": "cavalry",
+    "name": "侦察兵",
+    "cat": "陆军",
+    "cost": {
+      "money": 35,
+      "food": 6
+    },
+    "power": 22,
+    "tech": "recon",
+    "desc": "快速侦察。"
+  },
+  {
+    "id": "marine",
+    "name": "陆战队",
+    "cat": "特种",
+    "cost": {
+      "money": 160,
+      "rare": 5
+    },
+    "power": 80,
+    "tech": "navy",
+    "desc": "两栖登陆。"
+  },
+  {
+    "id": "cyberunit",
+    "name": "网络战单位",
+    "cat": "特种",
+    "cost": {
+      "money": 300,
+      "rare": 10
+    },
+    "power": 70,
+    "tech": "cyber",
+    "desc": "瘫痪敌方系统。"
+  },
+  {
+    "id": "satunit",
+    "name": "卫星",
+    "cat": "战略",
+    "cost": {
+      "money": 900,
+      "rare": 30
+    },
+    "power": 150,
+    "tech": "satellite",
+    "desc": "天基侦察预警。"
+  },
+  {
+    "id": "fortress",
+    "name": "要塞守备",
+    "cat": "陆军",
+    "cost": {
+      "money": 180,
+      "rare": 4
+    },
+    "power": 100,
+    "tech": "fortify",
+    "desc": "固定防御核心。"
+  },
+  {
+    "id": "spacetroop",
+    "name": "天军",
+    "cat": "战略",
+    "cost": {
+      "money": 1800,
+      "rare": 50
+    },
+    "power": 300,
+    "tech": "spaceflight",
+    "desc": "轨道打击力量。"
+  }
+]
