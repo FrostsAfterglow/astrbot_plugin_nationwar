@@ -49,6 +49,86 @@ class Engine:
             state["regions"] = copy.deepcopy(tpl["regions"])
         return state
 
+    def purge_inactive(self, state: dict, days: int, now: int | None = None):
+        """清理 N 天未使用的账号，并级联释放其全部世界状态。
+
+        规则（用户要求）：游戏账号储存永久化，但连续 N 天（默认 30）没有任何指令
+        使用则自动清空数据。清档必须同步回收，否则地图/组织名/外交会残留"幽灵国家"：
+        - 删除玩家存档文件（含 .bak）
+        - 释放其占领地区（owner/capital_of 清空、dev 归零）
+        - 清理 org_index、relations、wars、allies 中涉及该 QQ 的条目
+        - 写事件日志、更新 last_purge
+        返回 (被清理账号描述列表, 释放地区数)，供启动/后台日志记录。
+        """
+        now = now or int(time.time())
+        try:
+            days = int(days)
+        except Exception:
+            days = 30
+        if days <= 0:
+            return [], 0
+        cutoff = now - days * 86400
+        expired = []
+        for p in self.store.all_players():
+            la = (p.get("last_active") or p.get("last_tick")
+                  or p.get("registered_at") or 0)
+            try:
+                la = int(la)
+            except Exception:
+                la = 0
+            if la and la < cutoff:
+                expired.append(p)
+        if not expired:
+            return [], 0
+
+        qqset = {str(p["qq"]) for p in expired}
+        freed = self._cascade_release(state, qqset)
+
+        # 删除存档（放在状态清理之后，保证级联信息完整）
+        for p in expired:
+            self.store.delete_player(p["qq"])
+
+        names = [f"{p.get('org') or '(未命名)'}(QQ {p['qq']})" for p in expired]
+        try:
+            events = state.setdefault("events", [])
+            events.append({
+                "t": now,
+                "text": f"系统：{len(expired)} 个超过 {days} 天未使用的账号已自动注销，"
+                        f"释放 {freed} 个地区。",
+            })
+            if len(events) > 50:
+                del events[:-50]
+        except Exception:
+            pass
+        state["last_purge"] = now
+        self.save(state=state)
+        return names, freed
+
+    def _cascade_release(self, state: dict, qqset: set) -> int:
+        """级联释放一组 QQ 在全球状态中的一切痕迹，返回释放的地区数。
+
+        供「30 天自动清档」与玩家「主动注销」共用，避免地图残留幽灵国家。
+        """
+        def involves(key: str) -> bool:
+            return any(part in qqset for part in str(key).split("|"))
+
+        freed = 0
+        for r in state.get("regions", []):
+            if str(r.get("owner", "")) in qqset:
+                r["owner"] = ""
+                r["capital_of"] = ""
+                r["dev"] = 0
+                freed += 1
+        oi = state.setdefault("org_index", {})
+        for k in [k for k, v in oi.items() if str(v) in qqset]:
+            oi.pop(k, None)
+        rel = state.setdefault("relations", {})
+        for k in [k for k in rel if involves(k)]:
+            rel.pop(k, None)
+        state["wars"] = [k for k in state.get("wars", []) if not involves(k)]
+        state["allies"] = [k for k in state.get("allies", []) if not involves(k)]
+        return freed
+
     def region_by_id(self, state, rid):
         for r in state["regions"]:
             if r["id"] == rid:
@@ -311,6 +391,9 @@ class Engine:
 
     def dispatch(self, qq: str, cmd_key: str, rest: str, state: dict) -> str:
         now = int(time.time())
+        # 玩家主动发出任意指令 = 一次「使用」，刷新最后活跃时间（30 天保活判定）。
+        # 未注册时 touch_active 内部 load 返回 None，不写盘、无副作用。
+        self.store.touch_active(qq, now)
         cmd = next((c for c in self._cmds if c["key"] == cmd_key), None)
         tag = cmd["tag"] if cmd else ""
 
@@ -342,7 +425,13 @@ class Engine:
             if self.logger:
                 self.logger.error("指令 %s 执行异常: %s", cmd_key, e)
             out = f"⚠️ 指令执行出错：{e}"
-        self.save(p, state)
+        # 注销/重置类指令会在路由内部删除或替换玩家存档，并打上
+        # _skip_final_save 标记。此时绝不能把旧的 p 对象再写回去，
+        # 否则会「复活」已注销账号或让重置失效。
+        if p.get("_skip_final_save"):
+            self.save(state=state)
+        else:
+            self.save(p, state)
         return out
 
     def _route(self, p, cmd, tag, rest, state, now):
@@ -1305,11 +1394,21 @@ class Engine:
         if op == "status":
             players = self.store.all_players()
             regs = len(players)
-            active = len([x for x in players if time.time() - x.get("last_tick", 0) < 3600])
+            now_t = time.time()
+            active = len([x for x in players if now_t - x.get("last_active", 0) < 3600])
             regions = len(state["regions"])
             owned = len([r for r in state["regions"] if r["owner"]])
-            return (f"🖥️ 服务器状态：在线国家 {regs}（近1小时活跃 {active}），"
-                    f"世界 {regions} 地区已占领 {owned}，战争 {len(state['wars'])} 场。")
+            try:
+                days = int(self.config.get("inactive_days", 30) or 30)
+            except Exception:
+                days = 30
+            lp = state.get("last_purge", 0)
+            lp_txt = time.strftime("%m-%d %H:%M", time.localtime(lp)) if lp else "尚未执行"
+            return (f"🖥️ 服务器状态：注册国家 {regs}（近1小时活跃 {active}），"
+                    f"世界 {regions} 地区已占领 {owned}，战争 {len(state['wars'])} 场。\n"
+                    f"【存档】账号按 QQ 号永久保存，插件重载/重启/更新均不重置。\n"
+                    f"【自动注销】连续 {days} 天未发送任何指令的账号将自动清空数据"
+                    f"（释放其地区与组织名）。上次清理：{lp_txt}。")
         if op == "online":
             players = self.store.all_players()
             if not players:
@@ -1326,16 +1425,13 @@ class Engine:
             return self._rank(state, "kill")
         if op == "delete":
             if p:
-                import os
-                pp = self.store.player_path(p["qq"])
-                if os.path.exists(pp):
-                    os.remove(pp)
-                # 清理 org_index
-                for k, v in list(state["org_index"].items()):
-                    if v == p["qq"]:
-                        del state["org_index"][k]
+                qq = str(p["qq"])
+                freed = self._cascade_release(state, {qq})
+                self.store.delete_player(qq)
+                p["_skip_final_save"] = True   # 防止 dispatch 末尾把旧对象写回复活
                 self.save(state=state)
-                return "🗑️ 你的国家数据已注销。"
+                return (f"🗑️ 你的国家数据已注销，已释放 {freed} 个地区。"
+                        f"账号数据已永久删除，重新 /注册 即为全新国家。")
             return "你还没有国家。"
         if op == "reset":
             if not p:
@@ -1345,6 +1441,7 @@ class Engine:
             home = p.get("home_region")
             np_ = self.store.new_player(qq, p.get("org", ""), start, home)
             self.save(np_, state)
+            p["_skip_final_save"] = True       # 防止旧 p 覆盖刚写入的新玩家
             return "🔄 已重置你的国家数据，重新开始。"
         return "未知系统指令。"
 
@@ -1384,7 +1481,9 @@ class Engine:
 
     def _rules_text(self):
         return ("📜 游戏规则：\n"
-                "· 账号=QQ号，数据按 QQ 隔离保存，跨群互通。\n"
+                "· 账号=QQ号，数据按 QQ 隔离永久保存，跨群互通；插件重载/更新都不会重置存档。\n"
+                "· 长期不打理的国家会被系统回收：连续 30 天未发送任何指令，账号数据将自动清空，"
+                "其占领的地区与组织名同步释放（想保号只需偶尔发一条指令即可）。\n"
                 "· 必须 /注册 并 /初始组织名 才能游玩。\n"
                 "· 资源（资金/粮食/石油/稀有金属/科技点）随时间自动产出，受幸福/稳定/政策影响。\n"
                 "· 建筑提供产出与防御；科技解锁兵种与高级建筑；兵种用于进攻/防守。\n"

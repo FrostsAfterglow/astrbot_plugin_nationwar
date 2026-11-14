@@ -300,117 +300,36 @@ class ImageRenderer:
         img.save(p, "PNG")
         return p
 
-    # ---- 世界地图 ----------------------------------------------------------
-    def render_world_map(self, state: dict, world_tpl: dict) -> Optional[str]:
-        """完整虚拟世界地图：按大陆分板块，每个地区一个格子（归属着色 + 编号 + 简称）。"""
+    # ---- 世界地图 / 地区地图（真正的地形图，委托 geomaps 模块）--------------
+    def render_world_map(self, state: dict, world_tpl: dict,
+                         owners: dict | None = None) -> Optional[str]:
+        """完整虚拟世界【地形地图】：不规则大陆海岸线 + Voronoi 地区拼接 +
+        地形纹理 + 归属势力染色 + 首都/资源/编号 + 经纬网 + 罗盘 + 比例尺 + 图例。
+
+        owners: {qq: 组织名}，用于图例/标注显示国家名。地图随归属与时间变化重新生成。
+        """
         if not self.available:
             return None
-        th = THEMES["blue"]
+        try:
+            from .geomaps import world_map
+        except Exception:
+            return None
         regions = state.get("regions", [])
-        conts = world_tpl.get("continents", [])
-        W, PAD = 1500, 50
-        head_h, foot_h = 160, 70
-        col_gap = 26
-        cont_cols = 3
-        cont_w = (W - PAD * 2 - col_gap * (cont_cols - 1)) // cont_cols
-        cell_w = (cont_w - 24) // 4
-        cell_h = 62
-        title_h = 46
+        sig = "|".join(f"{r.get('id')}:{r.get('owner','')}" for r in regions)
+        p = self._path("wmap", f"{int(time.time() // 30)}|{sig}")
+        return world_map(state, world_tpl, owners or {}, self._font, p, sanitize)
 
-        # 每大陆格数
-        by_cont = {}
-        for r in regions:
-            by_cont.setdefault(r.get("continent", "未知"), []).append(r)
-        cont_h = {}
-        for c in conts:
-            n = len(by_cont.get(c, []))
-            rows = (n + 3) // 4
-            cont_h[c] = title_h + rows * cell_h + 20
-
-        col_heights = [0] * cont_cols
-        place = []
-        for i, c in enumerate(conts):
-            ci = min(range(cont_cols), key=lambda k: col_heights[k])
-            place.append((c, PAD + ci * (cont_w + col_gap), col_heights[ci]))
-            col_heights[ci] += cont_h[c] + col_gap
-
-        H = head_h + max(col_heights) + foot_h
-        img = self._gradient(W, H, th)
-        d = ImageDraw.Draw(img)
-        d.rectangle([0, 0, W, 10], fill=th["accent"])
-        t = sanitize(f"[图] 艾瑟拉世界地图 · {world_tpl.get('name','')}")
-        tw = self._tw(d, t, 44)
-        d.text(((W - tw) / 2, 34), t, font=self._font(44), fill=th["accent2"])
-        sub = f"共 {len(conts)} 大陆 / {len(regions)} 地区 · 有色=已被占领 · 数字=地区编号（/区域地图 名称 查详情）"
-        sw = self._tw(d, sub, 21)
-        d.text(((W - sw) / 2, 100), sanitize(sub), font=self._font(21), fill=th["sub"])
-        d.line([(PAD, head_h - 18), (W - PAD, head_h - 18)], fill=th["line"], width=2)
-
-        palette = [(79, 209, 197), (246, 196, 90), (255, 107, 107),
-                   (150, 130, 240), (110, 200, 120), (240, 150, 90)]
-        owner_color = {}
-        for r in regions:
-            o = r.get("owner", "")
-            if o and o not in owner_color:
-                owner_color[o] = palette[len(owner_color) % len(palette)]
-
-        for c, x, y0 in place:
-            y = head_h + y0
-            d.rounded_rectangle([x, y, x + cont_w, y + cont_h[c]], radius=16,
-                                fill=th["card"], outline=th["line"], width=2)
-            d.text((x + 16, y + 10), sanitize(f"【{c}】"), font=self._font(28), fill=th["accent"])
-            for i, r in enumerate(by_cont.get(c, [])):
-                cx = x + 12 + (i % 4) * cell_w
-                cy = y + title_h + (i // 4) * cell_h
-                own = r.get("owner", "")
-                fill = owner_color.get(own) if own else th["chip"]
-                d.rounded_rectangle([cx, cy, cx + cell_w - 8, cy + cell_h - 8],
-                                    radius=8, fill=fill,
-                                    outline=th["accent"] if own else th["line"], width=2)
-                nm = sanitize(r.get("name", ""))[:4]
-                fg = th["bg"] if own else th["fg"]
-                d.text((cx + 8, cy + 6), nm, font=self._font(18), fill=fg)
-                rid = str(r.get("id", ""))
-                d.text((cx + 8, cy + 30), f"#{rid}", font=self._font(15), fill=fg)
-
-        foot = "有色格子 = 已被某国占领；灰格 = 无主地区 · 由 国家战争插件 合成图片发送"
-        fw = self._tw(d, foot, 20)
-        d.text(((W - fw) / 2, H - foot_h + 16), sanitize(foot), font=self._font(20), fill=th["sub"])
-        p = self._path("map", str(int(time.time() // 60)) + str(len(regions)) + str(sum(1 for r in regions if r.get("owner"))))
-        img.save(p, "PNG")
-        return p
-
-    def render_region_map(self, region: dict) -> Optional[str]:
-        """单个地区放大示意图（地形 + 资源 + 防御 + 归属）。"""
+    def render_region_map(self, region: dict, owners: dict | None = None,
+                          world_tpl: dict | None = None) -> Optional[str]:
+        """单个地区【放大地形图】：层叠山脊/森林/沙丘海岸/农田/高原场景 +
+        资源图标 + 城池/首都 + 防御塔楼 + 信息面板 + 罗盘比例尺。"""
         if not self.available:
             return None
-        th = THEMES["blue"]
-        W, H = 900, 520
-        img = self._gradient(W, H, th)
-        d = ImageDraw.Draw(img)
-        d.rectangle([0, 0, W, 10], fill=th["accent"])
-        t = sanitize(f"[地] {region.get('name','')} · {region.get('continent','')}")
-        d.text((46, 36), t, font=self._font(40), fill=th["accent2"])
-        d.line([(46, 104), (W - 46, 104)], fill=th["line"], width=2)
-        # 中央格
-        d.rounded_rectangle([300, 150, 600, 380], radius=24, fill=th["chip"],
-                            outline=th["accent"], width=4)
-        d.text((450 - self._tw(d, sanitize(region.get("name", "")), 34) / 2, 240),
-               sanitize(region.get("name", "")), font=self._font(34), fill=th["fg"])
-        res_cn = {"food": "粮食", "oil": "石油", "rare": "稀有金属", "metal": "金属", "none": "无"}
-        rows = [
-            f"地形：{region.get('terrain','')}",
-            f"资源：{res_cn.get(region.get('resource'), region.get('resource',''))}（富集 {region.get('rich','')}）",
-            f"防御：{region.get('defense',0):.0f}",
-            f"归属：{region.get('owner','') or '无主'}",
-        ]
-        y = 400
-        for r in rows:
-            d.text((60, y), sanitize(r), font=self._font(24), fill=th["fg"])
-            y += 30
-        foot = "由 国家战争插件 合成图片发送"
-        d.text((W - 46 - self._tw(d, foot, 18), H - 40), sanitize(foot),
-               font=self._font(18), fill=th["sub"])
-        p = self._path("rmap", f"{region.get('id')}|{region.get('owner')}|{region.get('defense')}")
-        img.save(p, "PNG")
-        return p
+        try:
+            from .geomaps import region_map
+        except Exception:
+            return None
+        p = self._path("rmap", f"{int(time.time() // 30)}|{region.get('id')}|"
+                               f"{region.get('owner')}|{region.get('dev')}|{region.get('defense')}")
+        return region_map(region, owners or {}, world_tpl or {},
+                          self._font, p, sanitize)

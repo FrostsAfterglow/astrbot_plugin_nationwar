@@ -14,6 +14,16 @@
     "description": "新玩家初始资源（逗号分隔：资金,粮食,石油,稀有金属,科技点）。",
     "default": "1000,1000,200,50,50"
   },
+  "inactive_days": {
+    "type": "int",
+    "description": "账号自动注销天数：连续 N 天未发送任何指令，账号数据将自动清空并释放其地区与组织名。0 或负数表示永不自动清理。",
+    "default": 30
+  },
+  "data_dir_override": {
+    "type": "string",
+    "description": "自定义存档目录（绝对路径，留空则使用 AstrBot 持久化数据目录）。设置后可把账号数据固定到任意不被插件更新覆盖的位置。",
+    "default": ""
+  },
   "world_name": {
     "type": "string",
     "description": "虚拟世界名称。",

@@ -7,5 +7,11 @@ data_runtime/
 data/cmd_config.json
 data/t2i_templates/
 
+# 沙箱/本地联调时 StarTools 可能把持久目录落到插件内，勿提交
+data/plugin_data/
+data_runtime/rendered/
+*.json.bak
+_corrupt/
+
 # 本地预览产物
 _preview/

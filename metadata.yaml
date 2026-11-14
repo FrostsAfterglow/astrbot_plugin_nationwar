@@ -1,8 +1,8 @@
 name: astrbot_plugin_nationwar
 display_name: 虚拟国家战争
-desc: 大型文字模拟国家战争插件：完整虚拟世界地图 + 各大区地图，200+ 指令（分内政经济/军事外交两张指令图），按 QQ 号快速注册与隔离存档。
+desc: 大型文字模拟国家战争插件：真实地形世界地图 + 各大区放大地形图，200+ 指令（分内政经济/军事外交两张指令图），按 QQ 号快速注册与永久隔离存档（30 天未使用自动清档）。所有回复以合成图片发送。
 short_desc: 在群里模拟一个国家，种田、科技、造兵、外交、征服世界。
-version: v1.1.0
+version: v1.2.0
 author: FrostsAfterglow
 repo: https://github.com/FrostsAfterglow/astrbot_plugin_nationwar
 astrbot_version: ">=4.14,<5"

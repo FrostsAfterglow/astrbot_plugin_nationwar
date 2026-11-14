@@ -1,8 +1,10 @@
 """国家战争插件主类（AstrBot v4 Star 插件）。
 
-- 按 QQ 号快速注册（账号=QQ号），数据按 QQ 隔离保存、跨群互通
+- 按 QQ 号快速注册（账号=QQ号），数据按 QQ 隔离永久保存、跨群互通
+- 存档永久化：插件重载/重启/更新均不重置；原子写 + .bak 回滚 + 损坏隔离
+- 30 天未使用自动清档：级联释放地区、组织名、外交关系
 - 200+ 指令，分两张大型指令图（内政经济 / 军事外交）
-- 完整虚拟世界地图 + 各大区地图
+- 真正的地形世界地图 + 单地区放大地形图（Voronoi 拼接 + 地形纹理）
 - 所有指令在运行时按 commands.json 目录动态注册
 - **所有回复均以合成图片发送**；/指令图 直接发送两张 PNG 指令图
 """
@@ -58,8 +60,8 @@ def _rest(event: AstrMessageEvent, names: list) -> str:
 @register(
     PLUGIN_NAME,
     "FrostsAfterglow",
-    "大型文字模拟国家战争：虚拟世界地图 + 200+ 指令（内政经济/军事外交两张指令图），按 QQ 号快速注册与隔离存档。所有回复以合成图片发送。",
-    "1.1.0",
+    "大型文字模拟国家战争：真实地形世界地图 + 200+ 指令（内政经济/军事外交两张指令图），按 QQ 号快速注册与永久隔离存档（30 天未使用自动清档）。所有回复以合成图片发送。",
+    "1.2.0",
     "https://github.com/FrostsAfterglow/astrbot_plugin_nationwar",
 )
 class NationWarPlugin(Star):
@@ -67,12 +69,39 @@ class NationWarPlugin(Star):
         super().__init__(context)
         self.context = context
         self.config = dict(config) if config is not None else {}
+        # logger 通常由框架注入；这里做防御性兜底，保证启动迁移/清档日志不因
+        # 框架版本差异而抛 AttributeError。
+        if not getattr(self, "logger", None):
+            self.logger = logger
 
-        # 数据目录：优先用 AstrBot 持久化目录，回退到本地
+        # 数据目录：优先用 AstrBot 持久化目录（插件更新不会覆盖），回退到用户目录。
         base = self._resolve_data_dir()
         self.store = Store(base)
-
+        # 引擎先建（启动迁移/清理要用到）
         self.engine = Engine(self.store, self.config, logger=self.logger)
+
+        # ---- 存档永久化：升级迁移 + 活跃时间补齐 + 启动清档 ----
+        try:
+            # 1) 把旧版误落在「插件目录内 data_runtime」的存档迁移进持久目录
+            legacy = os.path.join(PLUGIN_DIR, "data_runtime")
+            moved = self.store.migrate_legacy_dir(legacy)
+            if moved:
+                self.logger.info("国家战争：已从旧目录迁移 %d 个存档文件到持久目录", moved)
+            # 2) 给升级前的老档案补齐 last_active（用历史时间戳兜底，不误判为过期）
+            fixed = self.store.migrate_last_active()
+            if fixed:
+                self.logger.info("国家战争：已为 %d 个老账号补齐最后活跃时间", fixed)
+            # 3) 启动时按配置清理长期未使用账号（级联回收）
+            st0 = self.store.load_state()
+            self.engine.ensure_world(st0)
+            days = self._inactive_days()
+            names, freed = self.engine.purge_inactive(st0, days)
+            if names:
+                self.logger.info("国家战争：启动清理 %d 个长期未使用账号，释放 %d 地区",
+                                 len(names), freed)
+        except Exception as e:
+            self.logger.error("国家战争：存档迁移/清理异常（不影响使用）：%s", e)
+
         # 指令元信息索引（key -> cmd），用于图片标题/主题色
         self._cmd_index = {c["key"]: c for c in self.store.commands()}
 
@@ -84,7 +113,7 @@ class NationWarPlugin(Star):
         else:
             self.logger.warning("国家战争插件：Pillow/字体不可用，回复将降级为纯文本")
 
-        self.logger.info("国家战争插件已加载，数据目录：%s", base)
+        self.logger.info("国家战争插件已加载，存档目录（永久）：%s", base)
 
         # 后台自动结算
         self._bg = None
@@ -92,15 +121,44 @@ class NationWarPlugin(Star):
             interval = max(5, int(self.config.get("tick_interval_min", 30) or 30))
             self._bg = asyncio.ensure_future(self._auto_tick(interval))
 
+    def _inactive_days(self) -> int:
+        try:
+            return int(self.config.get("inactive_days", 30) or 30)
+        except Exception:
+            return 30
+
     def _resolve_data_dir(self) -> str:
+        """返回一个「不会被插件更新覆盖」的持久化目录。
+
+        注意：StarTools.get_data_dir() 只接受插件名字符串或 None(自动探测)。
+        旧版误传 self(Star 实例) 会触发 os.path.join 抛错，从而回退到插件目录内
+        data_runtime —— 插件一更新整个目录被替换，账号数据就"被初始化"了。
+        这里改为传显式插件名，并把兜底目录放到用户主目录，彻底规避该问题。
+        """
+        # 1) 自定义目录（最高优先级，用户可固定到任意安全位置）
+        override = str(self.config.get("data_dir_override", "") or "").strip()
+        if override:
+            try:
+                os.makedirs(override, exist_ok=True)
+                return override
+            except Exception as e:
+                self.logger.warning("国家战争：自定义存档目录不可用(%s)，改用默认：%s", override, e)
+        # 2) AstrBot 官方持久化目录 data/plugin_data/<plugin_name>
         try:
             from astrbot.api.star import StarTools
-            d = str(StarTools.get_data_dir(self))
+            d = str(StarTools.get_data_dir(PLUGIN_NAME))
             if d:
                 return d
+        except Exception as e:
+            self.logger.warning("国家战争：StarTools 数据目录获取失败：%s", e)
+        # 3) 兜底：用户主目录下的稳定位置（绝不放在插件目录内，避免更新被覆盖）
+        home = os.path.expanduser("~")
+        d = os.path.join(home, ".astrbot_nationwar_data")
+        try:
+            os.makedirs(d, exist_ok=True)
         except Exception:
-            pass
-        return os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_runtime")
+            d = os.path.join(PLUGIN_DIR, "data_runtime")
+        return d
 
     async def _auto_tick(self, interval: int):
         try:
@@ -117,12 +175,24 @@ class NationWarPlugin(Star):
             state = self.store.load_state()
             self.engine.ensure_world(state)
             now = int(__import__("time").time())
+            # 每轮后台结算顺带执行一次 30 天自动清档（级联回收）
+            names, freed = self.engine.purge_inactive(state, self._inactive_days(), now)
+            if names:
+                self.logger.info("国家战争：定期清理 %d 个长期未使用账号，释放 %d 地区",
+                                 len(names), freed)
             for p in self.store.all_players():
                 self.engine.recalc(p, state, now)
                 self.store.save_player(p)
             self.store.save_state(state)
         except Exception as e:
             self.logger.error("tick 错误：%s", e)
+
+    def _owners(self, state: dict) -> dict:
+        """构造 qq -> 组织名 映射，供地图标注势力名用。"""
+        out = {}
+        for p in self.store.all_players():
+            out[str(p["qq"])] = p.get("org") or ""
+        return out
 
     # ---- 图片发送辅助 ------------------------------------------------------
     def _emit_image(self, event: AstrMessageEvent, path: str, mention: bool = False):
@@ -156,15 +226,16 @@ class NationWarPlugin(Star):
             return []
         out = []
         try:
+            owners = self._owners(state)
             if kind == "world":
-                p = self.imager.render_world_map(state, self.store.world_template())
+                p = self.imager.render_world_map(state, self.store.world_template(), owners)
                 if p:
                     out.append(p)
             elif kind == "region":
                 # 只在能定位到地区时渲染；找不到时由文本卡片提示
                 r = self.engine.region_by_name(state, rest)
                 if r:
-                    p = self.imager.render_region_map(r)
+                    p = self.imager.render_region_map(r, owners, self.store.world_template())
                     if p:
                         out.append(p)
         except Exception as e:
